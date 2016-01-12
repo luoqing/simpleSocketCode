@@ -28,4 +28,17 @@
 
 
 ### 本地进程之间的通信
-localComm.php实现的是父进程和子进程之间的通信。父进程和子进程相互发送命令进行解析。
+localComm.php实现的是父进程和子进程之间的通信。父进程和子进程相互发送命令进行解析。希望能进一步实现本地各个进程程序之间的相互通信。比如将参数传给另外一个进程。目前将参数或者请求传给另外一个程序，可以通过http接口，可以通过redis队列+daemon程序。
+
+### 参考资料
+* php socket 探索系列 http://blog.csdn.net/shagoo/article/details/6396089 
+* 实现阻塞式的socket 编程--- http://www.codeceo.com/article/php-socket-programming.html ---
+* php 的socket编程范例 --- http://www.cnblogs.com/thinksasa/archive/2013/02/26/2934206.html 
+* Linux C Socket编程原理及简单实例 http://www.cnblogs.com/xudong-bupt/p/3483059.html 
+* 实现简单的回射和进程间通信 http://itlab.idcquan.com/linux/kernel/894754_2.html 
+* select和epoll的区别 http://www.cnblogs.com/Anker/p/3265058.html
+* I/O 多路复用 http://www.cnblogs.com/Anker/p/3263780.html 
+* php socket 编程----参见workerman && stark && google
+* C实现通信模型 http://itlab.idcquan.com/linux/kernel/894754_2.html
+
+
