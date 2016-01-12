@@ -59,23 +59,26 @@ while(1)
     $new_sock = @socket_accept($sock);
     
     if (false === $new_sock)
-	{
-		//print_sock_err($sock, "ACCEPT"); // 对于连接不到的情况要跳出来，不要直接socket_close,
+    {
+	//print_sock_err($sock, "ACCEPT"); // 对于连接不到的情况要跳出来，不要直接socket_close,
 	//	exit;
-	}
+    }
     else
     {
         $new_socks[] = $new_sock;
         socket_set_nonblock($new_sock); // 这步也是必须的
     }
+    
     foreach ($new_socks as $new_sock)
     {
-	    // 第6步：从客户端socket读取命令---read/recv
+	// 第6步：从客户端socket读取命令---read/recv
         $request = readRequestFromClient($new_sock, MAX_STR_LEN);
-	    // 第7步：将命令处理结果发送消息给客户端socket---send
+	// 第7步：将命令处理结果发送消息给客户端socket---send
         if(!empty($request)) $response = sendResponseToClient($new_sock, $request); // 读取到请求再处理，否则一直读取不到报error
     }
+    
     $last_time = $now;
+    
     }
 }
 
@@ -83,8 +86,8 @@ while(1)
 //socket_close($sock);
 function readRequestFromClient($sock, $str_len)
 {
-	//$request = socket_read($sock, $str_len);
-	$res = socket_recv($sock, &$request, $str_len, 0);
+    //$request = socket_read($sock, $str_len);
+    $res = socket_recv($sock, &$request, $str_len, 0);
     fputs(STDOUT, $request);  // or fwrite(STDOUT, $request);
     return $request;
 
