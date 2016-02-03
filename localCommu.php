@@ -6,7 +6,7 @@
     
     $proc_cnt = $argv[1];
     if ($proc_cnt == false)   $proc_cnt = 1;
-    
+    $statusArr = array();
     // 1. createDaemonSocket
     $local_socket_file = "/tmp/local.sock";
     $local_socket = createLocalSocket($local_socket_file);
@@ -52,7 +52,7 @@
                     formatSendData($sock_cli, $data);
                 }
                 // 此处也要子进程进行一些业务处理，可以连接redis，pop出一些数据，进行处理
-                //doQueue();
+                doQueue();
                 
                 usleep(1000);
             }
@@ -84,7 +84,7 @@
                 // 发送命令给子进程, 并获取到返回结果
                 formatSendData($client, "status");
                 $result = handleReadData($client, MAX_STR_LEN, "Master");
-                   var_dump($result);
+                if (!empty($result)) var_dump($result);
             }
             $lastActiveTime = $now;
         }
@@ -93,14 +93,19 @@
         
         usleep(1000);
     }
-
+    
     function doQueue()
     {
-        $redis = new Redis('172.16.38.21', '17301');
+        global $statusArr;
+         $pid = posix_getpid();
+        $statusArr[$pid] ++;
+        $redis = new Redis();
+        $redis->connect('127.0.0.1', '6379');
+        // 这个中间可以是处理逻辑
         $data = "you are so beautiful!";
         $key = "test:lo";
         $redis->rpush($key, $data);
-        $data = $redis->lpop($data);
+        $data = $redis->lpop($key);
         $redis->close();
         
     }
@@ -115,7 +120,8 @@
     {
         // 其实还可以返回cpu哪些信息
         $pid = posix_getpid();
-        return $pid;
+        global $statusArr;
+        return json_encode($statusArr);
     }
 
     function parseData($data)
@@ -140,13 +146,6 @@
         {
             $result = $data;
         }
-        /*
-        if ($type == "Master") {
-            var_dump($cmd);
-            var_dump($handler_func);
-            var_dump($result);
-        }
-       */
         return $result;
     }
 
